@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schemalist>
+    <schema path="/org/gnome/shell/extensions/ggrid/" id="org.gnome.shell.extensions.ggrid">
+
+        <!-- Keys -->
+        <key type="as" name="arrange-workspace">
+            <default><![CDATA[['<Super>KP_0']]]></default>
+            <summary>Arrange workspace</summary>
+        </key>
+
+        <key type="as" name="toggle-grid">
+            <default><![CDATA[['<Super>KP_Multiply']]]></default>
+            <summary>Toggle grid visibility</summary>
+        </key>
+
+        <key type="as" name="move-left">
+            <default><![CDATA[['<Super>KP_Left']]]></default>
+            <summary>Move window left.</summary>
+        </key>
+
+        <key type="as" name="move-right">
+            <default><![CDATA[['<Super>KP_Right']]]></default>
+            <summary>Move window right</summary>
+        </key>
+
+        <key type="as" name="move-up">
+            <default><![CDATA[['<Super>KP_Up']]]></default>
+            <summary>Move window up</summary>
+        </key>
+
+        <key type="as" name="move-down">
+            <default><![CDATA[['<Super>KP_Down']]]></default>
+            <summary>Move window down</summary>
+        </key>
+
+        <key type="as" name="grow-wider">
+            <default><![CDATA[['<Shift><Super>KP_Right']]]></default>
+            <summary>Make window wider</summary>
+        </key>
+
+        <key type="as" name="grow-narrower">
+            <default><![CDATA[['<Shift><Super>KP_Left']]]></default>
+            <summary>Make window narrower</summary>
+        </key>
+
+        <key type="as" name="grow-taller">
+            <default><![CDATA[['<Shift><Super>KP_Down']]]></default>
+            <summary>Make window taller</summary>
+        </key>
+
+        <key type="as" name="grow-shorter">
+            <default><![CDATA[['<Shift><Super>KP_Up']]]></default>
+            <summary>Make window shorter</summary>
+        </key>
+
+        <!-- Values -->
+        <key type="i" name="grid-gap">
+            <default>20</default>
+            <summary>The gap between windows, and between window and screen edges.</summary>
+        </key>
+
+        <key type="i" name="grid-rows">
+            <default>6</default>
+            <summary>The number of rows in the grid.</summary>
+        </key>
+
+        <key type="i" name="grid-columns">
+            <default>12</default>
+            <summary>The number of columns in the grid.</summary>
+        </key>
+
+    </schema>
+</schemalist>

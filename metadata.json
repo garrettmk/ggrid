@@ -1,0 +1,8 @@
+{
+  "name": "ggrid",
+  "description": "A window tiling extension.",
+  "uuid": "ggrid@garrettmk",
+  "shell-version": ["3.34"],
+  "settings-schema": "org.gnome.shell.extensions.ggrid",
+  "url": "https://github.com/garrettmk/ggrid"
+}

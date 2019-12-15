@@ -1,0 +1,11 @@
+.highlighted-area
+{
+    background-color: rgba(241,122,73,0.0);
+    border: 1px solid rgba(217,108,59,0.0);
+}
+
+.highlighted-area:visible
+{
+    background-color: rgba(241,122,73,0.1);
+    border: 1px solid rgba(217,108,59,0.2);
+}
