@@ -110,7 +110,9 @@ var Workspace = class Workspace extends Base {
       this._display.connect('grab-op-end', this._handleWindowMovedOrResized),
     ];
 
-    settings.addChangeBinding('grid-rows', this._handleGridRowsChanged);
+    settings.addChangeBinding('grid-rows', this._handleGridSettingsChanged);
+    settings.addChangeBinding('grid-columns', this._handleGridSettingsChanged);
+    settings.addChangeBinding('grid-gap', this._handleGridSettingsChanged);
 
     const workArea = this._getLayoutArea();
     this._grid = new Grid({ boundingRect: workArea, settings });
@@ -126,7 +128,9 @@ var Workspace = class Workspace extends Base {
     this._displayBindings.forEach(binding => this._display.disconnect(binding));
     this._displayBindings = null;
 
-    this._settings.removeChangeBinding('grid-rows', this._handleGridRowChanged);
+    this._settings.removeChangeBinding('grid-rows', this._handleGridSettingsChanged);
+    this._settings.removeChangeBinding('grid-columns', this._handleGridSettingsChanged);
+    this._settings.removeChangeBinding('grid-gap', this._handleGridSettingsChanged);
 
     this._windows.forEach(window => window.destroy());
     this._windows = null;
@@ -225,9 +229,10 @@ var Workspace = class Workspace extends Base {
     this.snapWindowToGrid(window);
   }
 
-  _handleGridRowsChanged() {
-    const { rows } = this._settings.getValues('grid-rows');
-    this.log('Grid rows changed: ' + rows);
+  _handleGridSettingsChanged() {
+    const { rows, columns, gap } = this._grid.getGridSettings();
+    this.log('handleGridSettingsChanged', rows, columns, gap);
+    this.arrange();
   }
 
   snapWindowToGrid(window) {

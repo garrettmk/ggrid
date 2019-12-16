@@ -56,16 +56,19 @@
         <!-- Values -->
         <key type="i" name="grid-gap">
             <default>20</default>
+            <range min="0"/>
             <summary>The gap between windows, and between window and screen edges.</summary>
         </key>
 
         <key type="i" name="grid-rows">
             <default>6</default>
+            <range min="1"/>
             <summary>The number of rows in the grid.</summary>
         </key>
 
         <key type="i" name="grid-columns">
             <default>12</default>
+            <range min="1"/>
             <summary>The number of columns in the grid.</summary>
         </key>
 

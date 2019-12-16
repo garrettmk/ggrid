@@ -1,5 +1,5 @@
 {
-  "name": "ggrid",
+  "name": "GGrid",
   "description": "A window tiling extension.",
   "uuid": "ggrid@garrettmk",
   "shell-version": ["3.34"],

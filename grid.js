@@ -11,19 +11,23 @@ var Grid = class Grid extends Base {
   }
 
   setBoundingRect({ x, y, width, height}) {
-    const { gap } = this.getGridSettings();
-
     this._boundingRect = { x, y, width, height };
-    this._innerRect = {
+  }
+
+  getBoundingRect() {
+    return { ...this._boundingRect };
+  }
+
+  getContentRect() {
+    const { gap } = this.getGridSettings();
+    const { x, y, width, height } = this._boundingRect;
+
+    return {
       x: x + gap / 2,
       y: y + gap / 2,
       width: width - gap,
       height: height - gap,
     };
-  }
-
-  getBoundingRect() {
-    return { ...this._boundingRect };
   }
 
   getGridSettings() {
@@ -32,7 +36,7 @@ var Grid = class Grid extends Base {
   }
 
   snapXtoGrid(x) {
-    const { width, x: offset } = this._innerRect;
+    const { width, x: offset } = this.getContentRect();
     const { columns } = this.getGridSettings();
 
     const cellWidth = width / columns;
@@ -43,7 +47,7 @@ var Grid = class Grid extends Base {
   }
 
   snapYtoGrid(y) {
-    const { height, y: offset } = this._innerRect;
+    const { height, y: offset } = this.getContentRect();
     const { rows } = this.getGridSettings();
 
     const cellHeight = height / rows;
@@ -54,13 +58,20 @@ var Grid = class Grid extends Base {
   }
 
   snapRectToGrid({ x, y, width, height }) {
-    const { gap } = this.getGridSettings();
+    const { rows, columns, gap } = this.getGridSettings();
+    const { width: contentWidth, height: contentHeight } = this.getContentRect();
+
+    const minWidth = contentWidth / columns;
+    const minHeight = contentHeight / rows;
+
+    const rightEdge = Math.max(minWidth + x, width + x);
+    const bottomEdge = Math.max(minHeight + y, height + y);
 
     const snappedX = this.snapXtoGrid(x) + gap / 2;
     const snappedY = this.snapYtoGrid(y) + gap / 2;
 
-    const snappedWidth = this.snapXtoGrid(width + x) - snappedX - gap / 2;
-    const snappedHeight = this.snapYtoGrid(height + y) - snappedY - gap / 2;
+    const snappedWidth = this.snapXtoGrid(rightEdge) - snappedX - gap / 2;
+    const snappedHeight = this.snapYtoGrid(bottomEdge) - snappedY - gap / 2;
 
     return {
       x: snappedX,
@@ -72,27 +83,30 @@ var Grid = class Grid extends Base {
 
   screenToGrid(rect) {
     const { rows: gridRows, columns: gridColumns, gap } = this.getGridSettings();
+    const { x: innerX, y: innerY, width: innerWidth, height: innerHeight } = this.getContentRect();
     const { x, y, width, height } = this.snapRectToGrid(rect);
+    const { round, max } = Math;
 
-    const cellWidth = this._innerRect.width / gridColumns;
-    const cellHeight = this._innerRect.height / gridRows;
+    const cellWidth = innerWidth / gridColumns;
+    const cellHeight = innerHeight / gridRows;
 
-    const left = Math.round((x - this._innerRect.x) / cellWidth);
-    const top = Math.round((y - this._innerRect.y) / cellHeight);
-    const columns = Math.round(width / cellWidth);
-    const rows = Math.round(height / cellHeight);
+    const left = round((x - innerX) / cellWidth);
+    const top = round((y - innerY) / cellHeight);
+    const columns = max(round(width / cellWidth), 1);
+    const rows = max(round(height / cellHeight), 1);
 
     return { left, top, columns, rows };
   }
 
   gridToScreen({ left, top, columns, rows }) {
     const { rows: gridRows, columns: gridColumns, gap } = this.getGridSettings();
+    const { x: innerX, y:  innerY, width: innerWidth, height: innerHeight } = this.getContentRect();
 
-    const cellWidth = this._innerRect.width / gridColumns;
-    const cellHeight = this._innerRect.height / gridRows;
+    const cellWidth = innerWidth / gridColumns;
+    const cellHeight = innerHeight / gridRows;
 
-    const x = this._innerRect.x + left * cellWidth + gap / 2;
-    const y = this._innerRect.y + top * cellHeight + gap / 2;
+    const x = innerX + left * cellWidth + gap / 2;
+    const y = innerY + top * cellHeight + gap / 2;
     const width = columns * cellWidth - gap;
     const height = rows * cellHeight - gap;
 
@@ -105,7 +119,7 @@ var Grid = class Grid extends Base {
 
 
 var GridDisplay = class GridDisplay extends Base {
-  constructor({ grid }) {
+  constructor({ grid } = {}) {
     super();
 
     if (grid)

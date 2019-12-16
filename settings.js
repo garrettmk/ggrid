@@ -28,7 +28,7 @@ var Settings = class Settings extends Base {
 
     this._settings = new Gio.Settings({ settings_schema: schema });
     this._keybindings = {};
-    this._changeBindings = {};
+    this._changeBindings = [];
   }
 
   destroy() {
@@ -109,19 +109,20 @@ var Settings = class Settings extends Base {
   addChangeBinding(key, fn) {
     this.removeChangeBinding(key, fn);
 
-    if (!this._changeBindings[key])
-      this._changeBindings[key] = {};
-
     const eventKey = `changed::${key}`;
-    this._changeBindings[key][fn] = this._settings.connect(eventKey, fn);
+    this._changeBindings.push({
+      key,
+      fn,
+      ref: this._settings.connect(eventKey, fn)
+    });
   }
 
   removeChangeBinding(key, fn) {
-    const { [key]: { [fn]: existingBinding } = {} } = this._changeBindings;
+    const existingBinding = this._changeBindings.find(binding => binding.key === key && binding.fn === fn);
     if (!existingBinding)
       return;
 
-    this._settings.disconnect(existingBinding);
-    delete this._changeBindings[key][fn];
+    this._settings.disconnect(existingBinding.ref);
+    this._changeBindings = this._changeBindings.filter(binding => binding !== existingBinding);
   }
 };
