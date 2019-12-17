@@ -98,19 +98,43 @@ var Grid = class Grid extends Base {
     return { left, top, columns, rows };
   }
 
-  gridToScreen({ left, top, columns, rows }) {
+  gridToScreen(sourceRect) {
     const { rows: gridRows, columns: gridColumns, gap } = this.getGridSettings();
-    const { x: innerX, y:  innerY, width: innerWidth, height: innerHeight } = this.getContentRect();
+    const { x: screenX, y: screenY, width: screenWidth, height: screenHeight } = applyGap(this._boundingRect);
+    const clamp = (min, value, max) => Math.min(Math.max(min, value), max);
 
-    const cellWidth = innerWidth / gridColumns;
-    const cellHeight = innerHeight / gridRows;
+    function clampGridRect(rect) {
+      const columns = clamp(1, rect.columns, gridColumns);
+      const rows = clamp(1, rect.rows, gridRows);
+      const left = clamp(0, rect.left, gridColumns - columns);
+      const top = clamp(0, rect.top, gridRows - rows);
 
-    const x = innerX + left * cellWidth + gap / 2;
-    const y = innerY + top * cellHeight + gap / 2;
-    const width = columns * cellWidth - gap;
-    const height = rows * cellHeight - gap;
+      return { left, top, columns, rows };
+    }
 
-    return { x, y, width, height };
+    function gridToScreenCoordinates(rect) {
+      const cellWidth = screenWidth / gridColumns;
+      const cellHeight = screenHeight / gridRows;
+
+      return {
+        x: rect.left * cellWidth + screenX,
+        y: rect.top * cellHeight + screenY,
+        width: rect.columns * cellWidth,
+        height: rect.rows * cellHeight,
+      };
+    }
+
+    function applyGap(rect) {
+      return {
+        x: rect.x + gap / 2,
+        y: rect.y + gap / 2,
+        width: rect.width - gap,
+        height: rect.height - gap,
+      };
+    }
+
+    return [clampGridRect, gridToScreenCoordinates, applyGap]
+      .reduce((rect, stage) => stage(rect), sourceRect);
   }
 };
 
